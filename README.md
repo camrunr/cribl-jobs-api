@@ -1,6 +1,8 @@
 # cribl-jobs-api
 Dump data from the job API in Cribl to help with monitoring scheduled tasks. Status, stats, and timing are available to use as required.
 
+Authorization can happen in the script, or you can provide your bearer token in the env variable CRIBL_AUTH_TOKEN.
+
 ## Sample run
 
 ```
