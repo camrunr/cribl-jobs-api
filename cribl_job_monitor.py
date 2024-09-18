@@ -73,6 +73,22 @@ def cloud_auth(client_id,client_secret):
         print(str(r.json()))
         sys.exit()
 
+#############################
+# get logged in for self-managed instances
+def on_prem_auth(leader_url,un,pw):
+    # get logged in and grab a token
+    header = {'accept': 'application/json', 'Content-Type': 'application/json'}
+    login = '{"username": "' + un + '", "password": "' + pw + '"}'
+    r = requests.post(leader_url+auth_uri,headers=header,data=login,verify=False)
+    if (r.status_code == 200):
+        res = r.json()
+        return res["token"]
+    else:
+        print("Login failed, terminating")
+        print(str(r.json()))
+        sys.exit()
+
+
 def get_job_list(leader, group, auth_token):
     header = {"Authorization": "Bearer {}".format(auth_token), "accept": "application/json", "Content-Type": "application/json"}
     if group:
@@ -111,7 +127,7 @@ if __name__ == "__main__":
             bearer_token = cloud_auth(args.username,str(args.password))
         # for self-managed use the library's built-in method
         else:
-            bearer_token = api_get_auth_data(args.leader, args.username, args.password).json()["token"]
+            bearer_token = on_prem_auth(args.leader, args.username, args.password).json()["token"]
 
     debug_log("GETting job list")
     if "group" in args:
